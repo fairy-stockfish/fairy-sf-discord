@@ -4,7 +4,22 @@ import subprocess
 import tempfile
 import os
 import asyncio
+from threading import Thread
+from flask import Flask
 
+# Set up a minimal web server to keep the service alive on Render free tier
+app = Flask(__name__)
+@app.route("/")
+def index():
+    return "Bot is running!"
+
+def run_web():
+    app.run(host="0.0.0.0", port=10000)
+
+# Start Flask in a thread
+Thread(target=run_web).start()
+
+# Discord bot setup
 FAIRY_STOCKFISH_PATH = "./fairy-stockfish"
 
 intents = discord.Intents.default()
@@ -61,6 +76,4 @@ async def check_variant(ctx):
         finally:
             os.unlink(tmp.name)
 
-# Replace with your actual bot token or set it via environment variable
-import os
 bot.run(os.getenv("DISCORD_BOT_TOKEN", "YOUR_DISCORD_BOT_TOKEN"))
