@@ -1,6 +1,6 @@
 FROM python:3.11-slim
 
-# Install system dependencies
+# Install build dependencies
 RUN apt-get update && apt-get install -y \
     g++ make cmake git \
     && rm -rf /var/lib/apt/lists/*
@@ -11,11 +11,12 @@ RUN git clone https://github.com/ianfab/Fairy-Stockfish.git
 WORKDIR /build/Fairy-Stockfish/src
 RUN make build
 
-# Setup bot
+# App setup
 WORKDIR /app
 COPY bot.py .
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 RUN cp /build/Fairy-Stockfish/src/stockfish /app/fairy-stockfish
 
+EXPOSE 10000
 CMD ["python", "bot.py"]
