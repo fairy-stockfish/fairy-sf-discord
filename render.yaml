@@ -1,0 +1,8 @@
+services:
+  - type: worker
+    name: variant-discord-bot
+    env: docker
+    plan: free
+    envVars:
+      - key: DISCORD_BOT_TOKEN
+        sync: false
