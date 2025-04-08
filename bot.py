@@ -62,9 +62,11 @@ async def check_variant(ctx):
             )
             stdout, stderr = await proc.communicate()
 
-            result = f"**Exit Code:** {proc.returncode}\n"
+            result = ""
+            if proc.returncode:
+                result = f"**Exit Code:** {proc.returncode}\n"
             if stderr:
-                result += f"**Errors:**\n```\n{stderr.decode()[:1900]}\n```"
+                result += f"**Check result:**\n```\n{stderr.decode()[:1900]}\n```"
             elif stdout:
                 result += f"**Output:**\n```\n{stdout.decode()[:1900]}\n```"
             else:
