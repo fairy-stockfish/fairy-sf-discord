@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /build
 RUN git clone https://github.com/ianfab/Fairy-Stockfish.git
 WORKDIR /build/Fairy-Stockfish/src
-RUN make build
+RUN make build largeboards=yes all=yes
 
 # App setup
 WORKDIR /app
