@@ -1,8 +1,9 @@
 services:
-  - type: worker
-    name: variant-discord-bot
+  - type: web
+    name: fairy-stockfish-discord-bot
     env: docker
     plan: free
+    healthCheckPath: /
     envVars:
       - key: DISCORD_BOT_TOKEN
         sync: false
