@@ -30,6 +30,25 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 async def on_ready():
     print(f"Logged in as {bot.user}")
 
+def extract_ini_content(message_content):
+    """Extract INI content from message, handling triple backticks if present."""
+    content = message_content.replace("!check", "").strip()
+    
+    # Check if content is wrapped in triple backticks
+    if content.startswith('```') and content.endswith('```'):
+        # Remove opening backticks (and optional language specifier)
+        lines = content.split('\n')
+        if lines[0].startswith('```'):
+            lines = lines[1:]  # Remove first line with opening backticks
+        
+        # Remove closing backticks
+        if lines and lines[-1].strip() == '```':
+            lines = lines[:-1]  # Remove last line with closing backticks
+        
+        content = '\n'.join(lines)
+    
+    return content
+
 @bot.command(name="check")
 async def check_variant(ctx):
     file = None
@@ -42,7 +61,7 @@ async def check_variant(ctx):
             return
         file = await attachment.read()
     else:
-        ini_content = ctx.message.content.replace("!check", "").strip()
+        ini_content = extract_ini_content(ctx.message.content)
         if not ini_content:
             await ctx.send("Please provide `.ini` content or upload a file.")
             return
