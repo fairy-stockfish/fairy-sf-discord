@@ -36,14 +36,32 @@ def extract_ini_content(message_content):
     
     # Check if content is wrapped in triple backticks
     if content.startswith('```') and content.endswith('```'):
-        # Remove opening backticks (and optional language specifier)
         lines = content.split('\n')
-        if lines[0].startswith('```'):
-            lines = lines[1:]  # Remove first line with opening backticks
         
-        # Remove closing backticks
-        if lines and lines[-1].strip() == '```':
-            lines = lines[:-1]  # Remove last line with closing backticks
+        # Strip opening backticks from first line (keeping any content after)
+        if lines and lines[0].startswith('```'):
+            first_line = lines[0]
+            # Remove ``` and optional language specifier
+            after_backticks = first_line[3:]
+            # If there's a language specifier (alphabetic), remove it
+            if after_backticks and after_backticks[0].isalpha():
+                # Find end of language specifier
+                i = 0
+                while i < len(after_backticks) and after_backticks[i].isalpha():
+                    i += 1
+                lines[0] = after_backticks[i:].lstrip()  # Strip leading spaces
+            else:
+                lines[0] = after_backticks.lstrip()  # Strip leading spaces
+        
+        # Strip closing backticks from last line (keeping any content before)
+        if lines and lines[-1].endswith('```'):
+            lines[-1] = lines[-1][:-3].rstrip()  # Strip trailing spaces
+        
+        # Remove empty lines that were created only from backtick stripping
+        if lines and not lines[0].strip():
+            lines = lines[1:]
+        if lines and not lines[-1].strip():
+            lines = lines[:-1]
         
         content = '\n'.join(lines)
     
